@@ -1,0 +1,43 @@
+<html>
+  <title>this is a sercret chat test</title>
+  <body>
+    <form action="/send_message" >
+      <input type="hidden" name="userID" value="<%=@userID%>"/>
+      <input type="hidden" name="chatID" value="<%=@chatID%>"/>
+      <table>
+        <th><%=@chatID%></th>
+        <tr>
+          <td>
+            <textarea name="messages" col="50" rows="10">
+              <%
+              @messages.each do |message|
+              %>
+                  <%=message[1]["message"]%>
+              <%
+              end unless @messages.nil?
+            %>
+            </textarea>
+          </td>
+          <td>
+
+            <select multiple="" name="members">
+              <%
+              @members.each do |user|
+              %>
+                <option id="<%=user[0]%>"><%=user[1]["name"]%></option>
+              <%
+              end unless @members.nil?
+            %>
+            </select>
+          </td>          
+        </tr>
+        <tr>
+          <td colspan="2">
+            <input type="text" name="message" size="50">
+            <input type="submit" value="Send" >
+          </td>
+        </tr>
+      </table>
+    </form>
+  </body>
+</html>
