@@ -1,5 +1,6 @@
 require 'rubygems'
 require 'sinatra'
+require 'json'
 
 def clear_data(chatID)
   chat_room = $chat_data["#{chatID}"]
@@ -82,10 +83,27 @@ get '/send_message' do
   end unless chat_room["messages"].nil?
   
   $chat_data["#{params["chatID"]}"] = chat_room
-  redirect "/chat?chatID=#{params["chatID"]}&userID=#{params["userID"]}"
+  "ok"
+  #redirect "/chat?chatID=#{params["chatID"]}&userID=#{params["userID"]}"
 end
 
-get '/get_chat' do
+get '/load_chat' do
   chat_room = $chat_data["#{params["chatID"]}"]
-  "CHAT INFO #{chat_room.inspect}"
+#  chat_room["members"]["#{params["userID"]}"]["updated_at"] = "#{Time.now.to_i}"
+#  
+#  chat_room["members"].each do |key,member|
+#    if (Time.now.to_i - member["updated_at"].to_i) > 60
+#     chat_room["members"].delete(key)
+#    end
+#  end unless chat_room["members"].nil?
+#  
+#  chat_room["last_access"] = "#{Time.now.to_i}"
+#  chat_room["messages"].each do |key,message|
+#    if (Time.now.to_i - message["created_at"].to_i) > 15
+#      chat_room["messages"].delete(key)
+#    end
+#  end unless chat_room["messages"].nil?
+  
+  content_type :json
+  chat_room.to_json
 end

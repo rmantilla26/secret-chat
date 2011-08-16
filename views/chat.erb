@@ -1,26 +1,57 @@
 <html>
   <title>this is a sercret chat test</title>
-  <body>
+  <script src="jquery-1.6.2.min.js" type="text/javascript" ></script> 
+  <script type="text/javascript" >
+    $(document).ready(function(){
+      $.ajaxSetup({ cache: false });
+
+      $('#send').click(function() {
+        var url_send = "/send_message?chatID="+$('#chatID').val()+"&userID="+$('#userID').val()+"&message="+$('#message').val()
+        $.ajax({
+          url: url_send,
+          success: function(){
+            $("#messages").append("<li>"+$('#message').val()+"</li>");
+            $("#message").val("");
+          }
+        });
+      });
+    
+    });
+    
+    function load_chat(){
+      $.getJSON("/load_chat?chatID="+$('#chatID').val(),function(json){
+        $("#members").empty();
+        $.each(json.members,function(i,member){
+          $("#members").append($("<option />").val(member.id).text(member.name));
+          
+        });
+        $("#messages").empty();
+        $.each(json.messages,function(i,msg){
+          $("#messages").append("<li>"+msg.message+"</li>");
+        });
+      });
+    }
+    
+    
+    
+    
+  </script>
+  <body onload="setInterval('load_chat()', 5000);"  >
     <form action="/send_message" >
-      <input type="hidden" name="userID" value="<%=@userID%>"/>
-      <input type="hidden" name="chatID" value="<%=@chatID%>"/>
+      <input type="hidden" id="userID" name="userID" value="<%=@userID%>"/>
+      <input type="hidden" id="chatID" name="chatID" value="<%=@chatID%>"/>
       <table>
         <th><%=@chatID%></th>
         <tr>
           <td>
-            <textarea name="messages" col="50" rows="10">
-              <%
-              @messages.each do |message|
-              %>
-                  <%=message[1]["message"]%>
-              <%
-              end unless @messages.nil?
-            %>
-            </textarea>
+            <ul id="messages">
+
+            </ul>
+
           </td>
           <td>
 
-            <select multiple="" name="members">
+            <select multiple="" id="members" name="members">
               <%
               @members.each do |user|
               %>
@@ -33,11 +64,12 @@
         </tr>
         <tr>
           <td colspan="2">
-            <input type="text" name="message" size="50">
-            <input type="submit" value="Send" >
+            <input type="text" id="message" name="message" size="50">
+            <input type="button" id="send" value="Send" >
           </td>
         </tr>
       </table>
     </form>
   </body>
+
 </html>
