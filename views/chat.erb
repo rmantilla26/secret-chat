@@ -6,38 +6,52 @@
       $.ajaxSetup({ cache: false });
 
       $('#send').click(function() {
-        var url_send = "/send_message?chatID="+$('#chatID').val()+"&userID="+$('#userID').val()+"&message="+$('#message').val()
-        $.ajax({
-          url: url_send,
-          success: function(){
-            $("#messages").append("<li>"+$('#message').val()+"</li>");
-            $("#message").val("");
-          }
-        });
+        send_message()
+      });
+      
+      $('#form').submit(function() {
+        send_message()
+        return false;
       });
     
     });
     
     function load_chat(){
-      $.getJSON("/load_chat?chatID="+$('#chatID').val(),function(json){
+      $.getJSON("/load_chat?chatID="+$('#chatID').val()+"&userID="+$('#userID').val(),function(json){
         $("#members").empty();
         $.each(json.members,function(i,member){
-          $("#members").append($("<option />").val(member.id).text(member.name));
           
+          $("#members").append($("<option />").val(member.id).text(member.name));
+         
         });
-        $("#messages").empty();
         $.each(json.messages,function(i,msg){
-          $("#messages").append("<li>"+msg.message+"</li>");
+          
+          if($('#'+i).length==0){
+            $("#messages").append("<li id='"+i+"'>"+msg.message+"</li>");
+          }
         });
+      });
+    }
+    
+    function send_message(){
+      var url_send = "/send_message?chatID="+$('#chatID').val()+"&userID="+$('#userID').val()+"&message="+$('#message').val()
+      $.ajax({
+        url: url_send,
+        success: function(id){
+          $("#messages").append("<li id='"+id+"'>"+$('#message').val()+"</li>");
+          $("#message").val("");
+        }
       });
     }
     
     
     
     
+    
   </script>
   <body onload="setInterval('load_chat()', 5000);"  >
-    <form action="/send_message" >
+    <form id="form" >
+      <input type="hidden" id="lastmessageID" name="lastmessageID" value="0"/>
       <input type="hidden" id="userID" name="userID" value="<%=@userID%>"/>
       <input type="hidden" id="chatID" name="chatID" value="<%=@chatID%>"/>
       <table>

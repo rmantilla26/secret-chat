@@ -25,7 +25,7 @@ get '/chat' do
 end
 
 get '/new_chat' do
-  params["userID"] = "#{rand(9999999)}#{Time.now.to_i}"
+  params["userID"] = "#{Time.now.to_i}#{rand(9999999)}"
   chat_room = {
     "members" => {"#{params["userID"]}"=>{
         "name"=>"#{params["userID"]}",
@@ -47,7 +47,7 @@ get '/new_chat' do
 end
 
 get '/enter_chat' do
-  params["userID"] = "#{rand(9999999)}#{Time.now.to_i}"
+  params["userID"] = "#{Time.now.to_i}#{rand(9999999)}"
   chat_room = $chat_data["#{params["chatID"]}"]
   chat_room["members"]["#{params["userID"]}"]={
     "name"=>"#{params["userID"]}",
@@ -70,7 +70,8 @@ get '/send_message' do
     end
   end unless chat_room["members"].nil?
   
-  chat_room["messages"]["#{params["userID"]}#{Time.now.to_i}"]={
+  messageID="#{Time.now.to_i}#{params["userID"]}"
+  chat_room["messages"]["#{messageID}"]={
     "message"=>"#{params["message"]}",
     "userID"=>"#{params["userID"]}",
     "created_at"=>"#{Time.now.to_i}"
@@ -83,26 +84,26 @@ get '/send_message' do
   end unless chat_room["messages"].nil?
   
   $chat_data["#{params["chatID"]}"] = chat_room
-  "ok"
-  #redirect "/chat?chatID=#{params["chatID"]}&userID=#{params["userID"]}"
+  "#{messageID}"
 end
 
 get '/load_chat' do
   chat_room = $chat_data["#{params["chatID"]}"]
-#  chat_room["members"]["#{params["userID"]}"]["updated_at"] = "#{Time.now.to_i}"
-#  
-#  chat_room["members"].each do |key,member|
-#    if (Time.now.to_i - member["updated_at"].to_i) > 60
-#     chat_room["members"].delete(key)
-#    end
-#  end unless chat_room["members"].nil?
-#  
-#  chat_room["last_access"] = "#{Time.now.to_i}"
-#  chat_room["messages"].each do |key,message|
-#    if (Time.now.to_i - message["created_at"].to_i) > 15
-#      chat_room["messages"].delete(key)
-#    end
-#  end unless chat_room["messages"].nil?
+  
+  chat_room["members"]["#{params["userID"]}"]["updated_at"] = "#{Time.now.to_i}"
+  
+  chat_room["members"].each do |key,member|
+    if (Time.now.to_i - member["updated_at"].to_i) > 60
+     chat_room["members"].delete(key)
+    end
+  end unless chat_room["members"].nil?
+  
+  chat_room["last_access"] = "#{Time.now.to_i}"
+  chat_room["messages"].each do |key,message|
+    if (Time.now.to_i - message["created_at"].to_i) > 15
+      chat_room["messages"].delete(key)
+    end
+  end unless chat_room["messages"].nil?
   
   content_type :json
   chat_room.to_json
