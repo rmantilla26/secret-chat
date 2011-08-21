@@ -12,7 +12,7 @@ def clear_data(chatID)
 end
 
 get '/' do
-  erb :home
+  erb :chat
 end
 
 get '/chat' do
@@ -26,9 +26,15 @@ end
 
 get '/new_chat' do
   params["userID"] = "#{Time.now.to_i}#{rand(9999999)}"
+  if params["userNAME"].empty?
+    username = params["userID"] 
+  else
+    username = params["userNAME"] 
+  end
+  
   chat_room = {
     "members" => {"#{params["userID"]}"=>{
-        "name"=>"#{params["userID"]}",
+        "name"=>"#{username}",
         "updated_at" => "#{Time.now.to_i}"
       }
     },
@@ -43,20 +49,27 @@ get '/new_chat' do
     "last_access" => "#{Time.now.to_i}"
   }
   $chat_data["#{params["chatID"]}"] = chat_room
-  redirect "/chat?chatID=#{params["chatID"]}&userID=#{params["userID"]}"
+  "#{params["userID"]}"
+  #redirect "/chat?chatID=#{params["chatID"]}&userID=#{params["userID"]}"
 end
 
 get '/enter_chat' do
   params["userID"] = "#{Time.now.to_i}#{rand(9999999)}"
+  if params["userNAME"].empty?
+    username = params["userID"] 
+  else
+    username = params["userNAME"] 
+  end
   chat_room = $chat_data["#{params["chatID"]}"]
   chat_room["members"]["#{params["userID"]}"]={
-    "name"=>"#{params["userID"]}",
+    "name"=>"#{username}",
     "updated_at" => "#{Time.now.to_i}"
   }
   chat_room["last_access"] = "#{Time.now.to_i}"
   
   $chat_data["#{params["chatID"]}"] = chat_room
-  redirect "/chat?chatID=#{params["chatID"]}&userID=#{params["userID"]}"
+  "#{params["userID"]}"
+  #redirect "/chat?chatID=#{params["chatID"]}&userID=#{params["userID"]}"
 end
 
 get '/send_message' do
