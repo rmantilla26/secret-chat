@@ -1,0 +1,5 @@
+body { background-color: #3366ff}
+#content { margin-left: 30%; margin-right: 30%;   }
+#new_chat { width: 50px; }
+#enter_chat { width: 50px; }
+#chat { width: 150px; height: 150px; padding: 0.5em; background:  aqua }

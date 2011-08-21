@@ -1,17 +1,26 @@
 <html>
   <title>this is a sercret chat test</title>
+  <link REL=StyleSheet HREF="css/home.css" type="text/css" >
   <body>
-    <form action="/new_chat" >
-      <input type="test" name="chatID"/>
-      <input type="test" name="password"/>
-      <input type="submit" value="New chat room">
-    </form>
-    <br>
-    <form action="/enter_chat" >
-      <input type="test" name="chatID"/>
-      <input type="test" name="password"/>
-      <input type="submit" value="Enter chat room">
-    </form>
+    <div id="content">
+      <h1>SECRET CHAT</h1>
+      <h2>New Chat</h2>
+      <div id="new_chat" >
+        <form action="/new_chat" >
+          <input type="test" name="chatID" placeholder="Chat Name" />
+          <input type="test" name="password" placeholder="Password"/>
+          <input type="submit" value="New chat room">
+        </form>
+      </div>
+      <h2>Enter Chat</h2>
+      <div id="enter_chat">
+        <form action="/enter_chat" >
+
+          <input type="test" name="chatID" placeholder="Chat Name" />
+          <input type="test" name="password" placeholder="Password"/>
+          <input type="submit" value="Enter chat room">
+        </form>
+      </div>
+    </div>
   </body>
 </html>
-    
